@@ -247,4 +247,9 @@ class MockExportService
             // store (Phase 6/7). Mock keeps the share-sheet flow walkable.
             return """{"cuizine_export":"mock","profile":"${SukhiFixtures.PROFILE_ID}"}"""
         }
+
+        override suspend fun buildFeedbackExport(): String {
+            delay(400)
+            return """{"cuizine_feedback_export":"mock","events":[],"note":""}"""
+        }
     }

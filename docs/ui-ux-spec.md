@@ -145,6 +145,15 @@ For each screen below, "State" is the immutable data the container exposes, "Int
 
 ### 5.5 Settings (tab 4)
 
+> **v1 implementation note (Phase 2, 2026-06-10, per §11's living-doc discipline).** At v1's
+> scale these surfaces ship as *sections of one calm scrolling Settings screen* (with the
+> passphrase reveal and confirmations as sheets/dialogs) rather than separate navigation
+> destinations — seven near-empty destinations read as crowded ceremony, not calm. The
+> surfaces, their State/Intents, and their copy are exactly as specified below; only the
+> navigation packaging is consolidated. Split into destinations when v2 content (billing,
+> household management) gives the sub-surfaces real depth. The alpha feedback entry
+> ("Share feedback with the Cuizine founder", `data-model.md` §7) also lives here.
+
 **Settings home.** Purpose: the deliberate-destination surface for account, data, and trust. State: signed-in status, sync status, tier, the list of settings sections. Intents: navigate to each sub-surface. Calm, organized, not crowded.
 
 **Account & sync.** Purpose: sign-in status, sync status, what syncing means (the cloud holds encrypted blobs it cannot read — stated plainly). State: account, sync state, last-sync indication. Intents: sign-in, sign-out, trigger-sync. Side effects: launch sign-in; on sign-out, the appropriate warning about local-only data.

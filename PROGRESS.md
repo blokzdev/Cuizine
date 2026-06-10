@@ -5,17 +5,10 @@
 
 ## Current state
 
-- **Current phase:** Phase 2 — UI shell, component library, and mock data (`docs/roadmap.md` §3)
-- **Current task:** Phase 2 kickoff: surface Phase 2 decision checkpoints; build canonical fixtures (Sukhi/Aisha) + mock containers; then screens per `ui-ux-spec.md` §5
-- **Last completed:** **Phase 1 COMPLETE** (report: `PHASE-REPORTS/phase-1.md`; commits `f46de11`, `b067e7b`). qualityGate green (27 tests, zero lint warnings); app verified launching on Pixel 8 AVD with themed 4-tab scaffold + FAB
-- **Next up (Phase 2 outline):**
-  1. Phase 2 checkpoints: UI1–UI6 nav/conversation bets [data-driven, tune on-device]; Material 3 evolution [research-informed — research done at Phase 1: M3 1.4.0 current, no disqualifier; re-verify only if BOM bumps]
-  2. Canonical fixtures in `test/fixtures/` + mock repositories returning them (Sukhi constraint graph, seeded pantry, saved suggestions; Aisha for temporal scopes)
-  3. Mock containers per `ui-ux-spec.md` §5 contracts (State/Intents identical to future real ones) + 12-component library (§6)
-  4. Screens: onboarding/conversation flow A → Today/suggestion/conflict (B, D) → FAB conversation (C) → Profile/constraint detail → Pantry → Settings surfaces (E, F)
-  5. Compose UI tests per screen + flow navigability (Robolectric where possible)
-  6. Mock-data indicator in debug builds; doc-fix for `event_log.profile_id` nullability
-  7. Phase 2 exit: Flows A–F walkable on fixtures, zero LLM calls → report with device install steps → push
+- **Current phase:** Phase 3 — The constraint engine and validator (`docs/roadmap.md` §3)
+- **Current task:** Phase 3 kickoff: re-read `constraint-engine-spec.md` in full (§4–§9 + §11) + ADR 0009/0010; surface Phase 3 checkpoints (validator 3-retry bound, active-set cache invalidation — both [data-driven] at named moments); then engine types → scope evaluation → active set → validator → conflict resolution → hard-cases suite → wire Profile surface to real engine
+- **Last completed:** **Phase 2 COMPLETE** (report: `PHASE-REPORTS/phase-2.md`). All Flows A–F walkable on fixtures with zero LLM calls; on-emulator verification done (screenshots); 50 tests green; UI1–UI6 resolved (DECISION-LOG #2c); ui-ux-spec §5.5 living-doc note added; Orbit ergonomics verdict: keeping it
+- **Phase 3 plan notes (recovery):** engine/ stays pure Kotlin; the validator's deterministic logic and conflict policy (ADR 0009/0010) are PARK-ALWAYS territory — build exactly as specified, any deviation goes founder-pending; hard-cases suite minimums per testing-strategy §5 (7 categories: ≥16 severity, 25+ type, 15+ scope incl. all 6 temporal kinds + DST + solar, 10+ active-set, 30+ validator, 15+ conflict, 10+ provenance; allergens 45+, religious 15+, limits 12+ arrive with Phase 4 food data); Aisha fixture authored here (composite temporal scopes); property-based lib decision due (testing-strategy "glados or equivalent" is a Dart residue — pick Kotlin equivalent, surface in DECISION-LOG)
 
 ## Blockers
 
@@ -51,7 +44,7 @@ Tasks provable only against live services are listed here as
 | Phase | Status |
 |---|---|
 | 1 — Scaffolding | **✅ Complete (2026-06-10)** — `PHASE-REPORTS/phase-1.md` |
-| 2 — UI + mock data | **In progress** |
+| 2 — UI + mock data | **✅ Complete (2026-06-10)** — `PHASE-REPORTS/phase-2.md`; founder device walkthrough pending (non-blocking) |
 | 3 — Constraint engine + validator | Not started |
 | 4 — Food data layer | Not started |
 | 5 — Agents + orchestrator | Not started |

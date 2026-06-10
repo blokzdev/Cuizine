@@ -103,4 +103,10 @@ interface AccountRepository {
 interface ExportService {
     /** Builds the full user-data export as a JSON string handed to the share sheet. */
     suspend fun buildExport(): String
+
+    /**
+     * The alpha feedback path (`data-model.md` §7): a user-initiated event-log
+     * export shared with the founder. Cuizine NEVER uploads logs itself.
+     */
+    suspend fun buildFeedbackExport(): String
 }

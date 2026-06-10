@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -45,7 +46,12 @@ fun OnboardingHost(
         }
     }
 
-    Surface(modifier = modifier.fillMaxSize(), color = MaterialTheme.colorScheme.surface) {
+    // Full-screen host outside the scaffold: edge-to-edge is on, so system
+    // bar insets are handled here.
+    Surface(
+        modifier = modifier.fillMaxSize().systemBarsPadding(),
+        color = MaterialTheme.colorScheme.surface,
+    ) {
         when (state.step) {
             OnboardingStep.Welcome -> {
                 WelcomeStep(

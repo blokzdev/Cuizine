@@ -84,6 +84,13 @@ class SettingsViewModel
                 postSideEffect(SettingsSideEffect.ShareExport(json))
             }
 
+        /** Alpha feedback channel (`data-model.md` §7): always user-initiated. */
+        fun onShareFeedback() =
+            intent {
+                val json = exportService.buildFeedbackExport()
+                postSideEffect(SettingsSideEffect.ShareExport(json))
+            }
+
         fun onRequestDelete() = intent { reduce { state.copy(isDeleteConfirmVisible = true) } }
 
         fun onCancelDelete() = intent { reduce { state.copy(isDeleteConfirmVisible = false) } }

@@ -233,6 +233,39 @@ if a real container ever needs to diverge. **Confidence:** high.
 
 ---
 
+## #2c — Phase 2 checkpoint: UI1–UI6 navigation/conversation bets `[data-driven]` — RESOLVED (on-device)
+
+**Date:** 2026-06-10 · **Checkpoint:** `docs/roadmap.md` §3 Phase 2, checkpoint 1
+**Evidence:** Flows A–F walked on a Pixel 8 AVD against the canonical fixtures
+(screenshots in the Phase 2 report); container + render tests green.
+
+- **Four-tabs-plus-FAB model:** holds. The centered FAB reads clearly as "talk
+  to Cuizine"; tabs keep their back stacks; conversation-as-overlay (modal
+  sheet) returns cleanly to prior context. KEEP.
+- **UI6 FAB-vs-contextual redundancy:** both kept — the quiet "Tell Cuizine
+  something" text affordance on Today plus the FAB. On-device the two did not
+  feel redundant (different altitudes); the Today affordance needed a spacing
+  fix to stay clear of the FAB (applied). KEEP, re-check with founder
+  walkthrough feedback.
+- **UI1 long-press affordance:** not added (tentative answer kept: single-tap
+  only).
+- **Single-suggestion-on-Today:** holds well on-device — one card, accept /
+  not-quite-right / regenerate reads calm, not sparse. KEEP.
+- **ThinkingIndicator reveal:** one calm line ("Composing something that fits
+  your day…") with a settling pulse — felt right at mock latency (~1.2s);
+  re-judge under real agent latency in Phase 5/7.
+- **Disclaimer placement:** About section + (Phase 5) first conversation +
+  passphrase context — per the tentative answer.
+- **Structural notes fed back into `ui-ux-spec.md` (living doc):** §5.5
+  consolidation note (sections of one Settings screen at v1 scale; surfaces
+  and contracts unchanged) + the share-feedback entry location.
+
+**Confidence:** medium-high (founder's own device walkthrough pending — the
+Phase 2 report includes install steps). **Rollback:** every observation is a
+cosmetic/packaging call; reverting any is a contained UI change.
+
+---
+
 ## #2 — CLAUDE.md audit result (first-iteration mandate)
 
 **Date:** 2026-06-10 · **Type:** Process record

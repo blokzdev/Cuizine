@@ -106,5 +106,7 @@ fun Constraint.scopeSummary(): String {
         scope.contextual.requiredFlags
             .takeIf { it.isNotEmpty() }
             ?.joinToString(", ") { flag -> "while " + flag.replace('_', ' ') }
+    // "Always · while X" reads wrong — the contextual condition IS the scope.
+    if (contextual != null && scope.temporal.kind == "always") return contextual
     return listOfNotNull(temporal.takeIf { it.isNotEmpty() }, contextual).joinToString(" · ")
 }

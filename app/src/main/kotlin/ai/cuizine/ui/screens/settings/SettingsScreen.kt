@@ -126,6 +126,11 @@ fun SettingsScreen(
             onClick = viewModel::onRequestDelete,
             variant = CuizineButtonVariant.Plain,
         )
+        CuizineButton(
+            text = "Share feedback with the Cuizine founder",
+            onClick = viewModel::onShareFeedback,
+            variant = CuizineButtonVariant.Plain,
+        )
 
         SectionTitle("Cuizine alpha")
         Text(
