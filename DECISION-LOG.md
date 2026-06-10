@@ -199,6 +199,40 @@ test (proof container on Orbit 11 + Kotlin 2.3/Compose 1.11).
 
 ---
 
+## #2a — Phase 2 checkpoint surfacing (kickoff 2026-06-10)
+
+**Checkpoints (`docs/roadmap.md` §3 Phase 2):**
+1. **[data-driven] Navigation & conversation-surface bets (ui-ux-spec §12,
+   UI1–UI6).** Resolution mode: build the spec's tentative answers (single
+   suggestion on Today with regenerate escape hatch; FAB single-tap only; one
+   calm ThinkingIndicator line; disclaimers at first conversation + About +
+   passphrase context; no Profile search; contextual Today affordance quieter
+   than FAB), then tune on-device running Flows A–F on fixtures. Logged
+   observations land in the Phase 2 report.
+2. **[research-informed] Material 3 / Material You evolution.** RESOLVED —
+   research performed in the Phase 1 currency sweep (DECISION-LOG #1a):
+   Material3 1.4.0 stable (Expressive graduated), no component deprecations
+   affecting the §6 component set, dynamic color + predictive back + edge-to-
+   edge all current. KEEP the documented design-token approach. Re-verify only
+   if the Compose BOM pin moves.
+
+## #2b — Mock seam design mapping (surface-in-writing + proceed)
+
+**Situation:** `ui-ux-spec.md` §10 says Phase 2 ships "mock containers";
+CLAUDE.md §9 mandates interface+fake DI for external dependencies. These
+compose: containers are written ONCE against repository/agent interfaces;
+Phase 2 binds mock implementations (returning canonical fixtures) via Hilt;
+Phases 3–6 swap bindings to real implementations. The screens' State/Intents
+contract — the invariant §10 actually protects — never changes; "replacing a
+mock container" = rebinding its collaborators, not rewriting the container.
+**Why:** identical contract guarantee, less Phase 3–6 churn, and one seam
+discipline for both UI mocks and credential fakes. **Cross-refs:** ui-ux-spec
+§10; roadmap §3 P2; CLAUDE.md §9; build-conventions §4 (containers hold no
+business logic). **Rollback:** mechanical — extract per-screen mock containers
+if a real container ever needs to diverge. **Confidence:** high.
+
+---
+
 ## #2 — CLAUDE.md audit result (first-iteration mandate)
 
 **Date:** 2026-06-10 · **Type:** Process record

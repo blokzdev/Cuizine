@@ -529,7 +529,12 @@ A local append-only log of every meaningful event in the user's interaction with
 ```
 CREATE TABLE event_log (
   id TEXT PRIMARY KEY,                    -- UUID v4
-  profile_id TEXT NOT NULL,               -- FK to profiles.id, nullable for pre-profile events
+  profile_id TEXT,                        -- FK to profiles.id; NULL for pre-profile events
+                                          -- (e.g. constraint_conversation_started on day 0).
+                                          -- Corrected 2026-06-10: previously declared NOT NULL while
+                                          -- the comment said "nullable for pre-profile events" —
+                                          -- nullable is the reading that makes the specified
+                                          -- pre-profile events possible (DECISION-LOG.md #1c).
   event_type TEXT NOT NULL,               -- enumerated below
   event_severity TEXT NOT NULL,           -- 'info', 'warn', 'severity_one', 'severity_zero'
   timestamp TEXT NOT NULL,                -- ISO 8601 UTC
