@@ -14,7 +14,10 @@ of one human's relationship with food, expressed through meals.
 > **Status:** Foundation complete, pre-Phase-1 build. This repository currently
 > holds the foundation document set (`docs/`) and the architectural decision
 > records (`decisions/`). The Android codebase is built against that foundation
-> in seven phases — see [`docs/roadmap.md`](docs/roadmap.md) §3.
+> in seven phases — see [`docs/roadmap.md`](docs/roadmap.md) §3. The v1 build
+> runs as a long-running autonomous loop under a founder standing delegation
+> (delegated mode — `docs/roadmap.md` §2, Principle 6); live build state lives
+> in the root ledgers (`PROGRESS.md`, `DECISION-LOG.md`, `SETUP.md`).
 
 ---
 
@@ -103,7 +106,10 @@ Cuizine/
 
 The Android application module (`app/`), `prompts/`, `assets/`, `scripts/`, and
 the Gradle build are created in **Phase 1** of the build per
-[`docs/build-conventions.md`](docs/build-conventions.md) §3.
+[`docs/build-conventions.md`](docs/build-conventions.md) §3. At build kickoff
+the agent also adds the autonomous-loop ledgers at root: `PROGRESS.md`,
+`DECISION-LOG.md`, `SETUP.md`, `FOUNDER-FEEDBACK.md`, and `PHASE-REPORTS/`
+(see [`CLAUDE.md`](CLAUDE.md) §9).
 
 ## Where to start
 

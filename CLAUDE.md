@@ -45,7 +45,9 @@ This repository currently contains **only the foundation** — `docs/` and
 `decisions/`. There is **no Android code yet.** The application module (`app/`),
 `prompts/`, `assets/`, `scripts/`, and the Gradle build are created in
 **Phase 1**. Do not assume any code structure exists until you have created it
-per `docs/build-conventions.md` §3.
+per `docs/build-conventions.md` §3. At build kickoff the agent also creates the
+operational ledgers at the repo root — `PROGRESS.md`, `DECISION-LOG.md`,
+`SETUP.md`, `FOUNDER-FEEDBACK.md`, `PHASE-REPORTS/` — see §9.
 
 ## 3. The build sequence (where to begin)
 
@@ -77,14 +79,28 @@ Every phase begins this way (this is what activates the roadmap's per-phase
    references.
 2. **Surface that phase's Decision checkpoints** — each is tagged
    `[data-driven]`, `[research-informed]`, or `[both]`. For
-   `[research-informed]` checkpoints (e.g. library versions, provider/API
-   currency, Material 3 evolution), research current state and present findings
-   *with a recommendation* — but research informs the proposal, it does not
-   authorize the change.
-3. **Confirm or challenge each checkpoint with the founder before writing code.**
-   A changed decision goes through the ADR discipline (a superseding ADR), not a
-   silent edit. Settled decisions outside the flagged checkpoints stay settled.
-4. **Then build**, writing tests alongside code (not after).
+   `[research-informed]` checkpoints (library versions, provider/API currency,
+   Material 3 evolution), research current state first. Research informs the
+   proposal; it never by itself authorizes a change.
+3. **Resolve each checkpoint per the active operating mode**
+   (`docs/roadmap.md` §2, Principle 6, "Operating modes"):
+   - **Interactive mode (default):** present findings *with a recommendation*
+     and wait for the founder's confirmation before writing code.
+   - **Delegated mode** (active when the founder has granted a standing
+     delegation — recorded as entry #0 in `DECISION-LOG.md`): resolve
+     autonomously and do not idle waiting for input. `[research-informed]` →
+     keep the documented choice unless research reveals a disqualifier
+     (deprecation/abandonment, security advisory, breaking change, clear
+     incompatibility); otherwise take the minimal-deviation alternative.
+     `[data-driven]` → answer from build/test experience at the named moment.
+     Alpha-contingent → log as explicitly deferred. Every resolution is one
+     `DECISION-LOG.md` entry: checkpoint, evidence, decision, confidence,
+     rollback note. Founder steering arrives asynchronously via
+     `FOUNDER-FEEDBACK.md` — read it at the start of every iteration.
+4. **A changed product decision goes through the ADR discipline** (a
+   superseding ADR), in either mode — never a silent edit. Settled decisions
+   outside the flagged checkpoints stay settled.
+5. **Then build**, writing tests alongside code (not after).
 
 ## 5. The decision protocol — decide locally, surface architecturally
 
@@ -96,7 +112,9 @@ method, micro-optimizations, test fixture details, file organization within an
 existing package, lint fixes, doc comments, and tests for behavior the
 foundation already specifies.
 
-**Always surface and wait** (architectural): new files in unexpected folders,
+**Always surface** (architectural — interactive mode: surface and *wait*;
+delegated mode: surface in writing via a `DECISION-LOG.md` entry and *proceed*
+per §4, except the park-always items below): new files in unexpected folders,
 **any new dependency** (even small ones), decisions affecting multiple foundation
 docs, anything that looks like a design choice, anything touching the
 **encryption boundary**, the **validator's deterministic logic**, or the
@@ -109,6 +127,14 @@ cost of guessing wrong is silent drift, which is harder to recover from.
 When you surface, use this format: (1) brief situation, (2) the question or
 alternatives, (3) your recommendation + rationale, (4) cross-references to the
 relevant foundation docs.
+
+**Park-always (never resolved autonomously, in any mode):** any *deviation
+from spec* touching the **encryption boundary**, the **validator's
+deterministic logic**, or **`TierPolicy` enforcement** (building these *as
+specified* needs no permission — deviating from their spec does); and any
+cross-doc contradiction the conflict-resolution chain cannot resolve. These go
+to `PROGRESS.md` blockers as founder-pending with an options analysis, and work
+continues elsewhere. Forbidden behaviors (§7) are never unlocked by any mode.
 
 ## 6. How to write code (the essentials)
 
@@ -125,6 +151,11 @@ Full detail in `docs/build-conventions.md` §3–§5. The essentials:
 - **Compose:** stateless composables where possible, state hoisted to the
   container, collected via `collectAsStateWithLifecycle()`. Material 3 theme in
   `ui/theme/` expresses the calm-precise-warm voice.
+- **The UI keeps evolving after Phase 2** (`docs/build-conventions.md` §7,
+  `docs/ui-ux-spec.md` §11): cosmetic changes (spacing, color, copy, motion)
+  flow freely in-build; *structural* changes (new screen/destination/component,
+  changed flow, changed `State`/`Intents` contract) flow back into
+  `docs/ui-ux-spec.md` — it is a living doc.
 - **Kotlin style** (ktlint-enforced, 120 cols): prefer `val`, immutable data
   classes with `copy()`, sealed hierarchies for closed type sets, named args
   beyond two params (always for booleans), `is/has/can/should` boolean prefixes,
@@ -162,6 +193,49 @@ relevant ADR, check the architecture docs — and if the answer is in none of
 them, **surface the gap to the founder before guessing.** Often the question
 itself is the signal that a foundation doc needs to grow (the docs and code
 evolve together — `build-conventions.md` §7's bidirectional update discipline).
+
+## 9. The autonomous loop: ledgers, credentials, recovery
+
+When running in delegated mode (§4), the loop's durable state lives in five
+root-level artifacts, updated continuously and committed with the work:
+
+- **`PROGRESS.md`** — the build ledger: current phase, current task, last
+  completed, next up, blockers (incl. founder-pending items), toolchain
+  versions. Updated every iteration.
+- **`DECISION-LOG.md`** — every checkpoint resolution and every architectural
+  surfacing. Entry #0 is the founder's standing delegation.
+- **`SETUP.md`** — the founder's guide: every credential/service only the
+  founder can supply (what to get, exact steps, where it goes, which phase
+  needs it, how to verify it works), ending with the final live-verification
+  sequence the founder runs after completing setup.
+- **`FOUNDER-FEEDBACK.md`** — the founder's asynchronous steering channel.
+  Read at the start of every iteration; any new note is highest-priority
+  input; mark it addressed with a dated inline reply.
+- **`PHASE-REPORTS/phase-N.md`** — written at each phase completion (built /
+  tested / checkpoint decisions / deviations / doc updates / founder-pending
+  items), then committed and **pushed** — the push is the founder's async
+  review surface.
+
+**Credentials are fake-first and absence-driven.** No real keys are needed to
+build. Every external dependency sits behind an interface with a deterministic
+fake (default) and a real client; DI selects by presence of config in
+`local.properties` (gitignored from Phase 1). Never invent placeholder secret
+strings; never commit or log key material. Firebase work targets the Local
+Emulator Suite until real config exists. Tasks provable only against live
+services are marked "verified-against-fake / pending live verification" in
+`PROGRESS.md` — honestly distinct from done.
+
+**Local-first CI.** One aggregate Gradle task (`qualityGate`: ktlint, Android
+Lint, unit tests, Robolectric, coverage thresholds) runs locally before every
+commit (Windows: `gradlew.bat qualityGate`). No GitHub Actions on push/PR —
+`git push` is backup and founder review at phase milestones, never a CI
+trigger.
+
+**Session recovery.** If a session compacts, restarts, or dies: the new
+session reads this file, `PROGRESS.md`, `DECISION-LOG.md`,
+`FOUNDER-FEEDBACK.md`, `SETUP.md`, and the current phase in
+`docs/roadmap.md`, then resumes the loop exactly where the ledger says — no
+re-planning, no re-asking settled or logged decisions.
 
 ---
 

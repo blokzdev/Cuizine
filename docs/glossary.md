@@ -80,6 +80,8 @@ This document does **not** define: terms from external standards (HTTP, SQL, Kot
 
 ### D
 
+**Decision checkpoint.** A named, phase-anchored moment in `roadmap.md` where a premade decision the foundation itself flags as a judgment call or data-contingent guess is re-confirmed or challenged before that phase's work begins. Each is tagged `[data-driven]`, `[research-informed]`, or `[both]`. Checkpoints are resolved interactively at phase gates by default, or autonomously under a founder standing delegation (delegated mode), with every resolution logged in `DECISION-LOG.md` and any changed product decision producing a superseding ADR. *Primary reference: `roadmap.md` Section 2, Principle 6.*
+
 **Deterministic validator.** See Validator.
 
 **Discriminated union payload.** The pattern in `data-model.md` Section 3 and `constraint-engine-spec.md` Section 3 where each constraint type has its own payload schema (stored as JSON in the `payload_json` column), and the `constraint_type` column is the discriminator that tells the code how to parse the payload. The five discriminated payloads: AvoidPayload, PreferPayload, RequirePayload, LimitPayload, ContextualPayload. *Primary reference: `constraint-engine-spec.md` Section 3, `data-model.md` Section 3.*

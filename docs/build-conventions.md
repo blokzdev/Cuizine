@@ -304,6 +304,16 @@ When the agent surfaces a decision, the format is:
 
 The founder responds with a decision (or with a counter-question if the agent's framing missed something). The decision is recorded — either inline in the conversation, in a commit message, or in a new ADR if the decision is architecturally consequential enough.
 
+### Surfacing under a delegated build loop
+
+Everything above describes interactive operation: surface, wait, the founder responds. When the founder has granted a **standing delegation** for an autonomous build loop (`roadmap.md` Section 2, Principle 6, "Operating modes" — recorded as entry #0 in `DECISION-LOG.md`), the meaning of "surface" changes from *surface and wait* to **surface in writing and proceed**: the agent records the same four-part format as a `DECISION-LOG.md` entry (situation, alternatives, recommendation, doc cross-references — plus the course taken and a rollback note) and continues under the delegation's decision rules: keep documented choices unless research disqualifies them, take the minimal-deviation alternative otherwise, and write a superseding ADR for any changed product decision. This redefinition applies wherever this document says "surface," including the dependency rule in Section 11 — in delegated mode, a new dependency is surfaced via the `DECISION-LOG.md` entry accompanying the commit that introduces it.
+
+Three categories are **never resolved autonomously, in any mode**:
+
+1. **Deviations from spec at the trust-critical core** — the encryption boundary, the validator's deterministic logic, and `TierPolicy` enforcement. Implementing these *as specified* requires no permission; *deviating* from their specification parks as a founder-pending blocker in `PROGRESS.md` with an options analysis, and work continues elsewhere.
+2. **Cross-doc contradictions the conflict-resolution chain cannot resolve.** Same parking behavior.
+3. **Anything on the Section 11 forbidden list.** Forbidden means forbidden; no delegation unlocks it.
+
 ## 7. How the foundation docs are kept current
 
 > The bidirectional update discipline. The foundation docs and the code evolve together; neither is the master and neither is the slave. When they drift, they get reconciled.
