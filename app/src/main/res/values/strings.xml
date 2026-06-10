@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Cuizine</string>
+
+    <!-- Bottom navigation (ui-ux-spec.md §4) -->
+    <string name="tab_today">Today</string>
+    <string name="tab_pantry">Pantry</string>
+    <string name="tab_profile">Profile</string>
+    <string name="tab_settings">Settings</string>
+    <string name="fab_conversation">Talk to Cuizine</string>
+
+    <!-- Phase 1 empty shell copy (replaced by real onboarding in Phase 2) -->
+    <string name="welcome_title">Welcome to Cuizine</string>
+    <string name="welcome_body">The kitchen that knows you is getting set up.</string>
+    <string name="placeholder_pantry">Your pantry will live here.</string>
+    <string name="placeholder_profile">Your constraints and profile will live here.</string>
+    <string name="placeholder_settings">Settings will live here.</string>
+</resources>

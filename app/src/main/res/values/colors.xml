@@ -1,0 +1,5 @@
+<resources>
+    <!-- Pre-Compose window background: warm off-white matching ui/theme/Color.kt surfaceLight. -->
+    <color name="window_background">#FFF8F5F1</color>
+    <color name="ic_launcher_background">#FF9A6A4F</color>
+</resources>

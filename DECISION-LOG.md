@@ -72,6 +72,133 @@ deliberately-historical "(Superseded.)" entries left untouched.
 
 ---
 
+## #1a — Phase 1 checkpoint: dependency & library currency `[research-informed]` — RESOLVED
+
+**Date:** 2026-06-10 · **Checkpoint:** `docs/roadmap.md` §3 Phase 1, checkpoint 1
+
+**Evidence:** 7-cluster web research (official release notes, Google Maven,
+GitHub releases; full matrix + sources in the research output, key facts below)
+cross-checked for mutual compatibility.
+
+**Decision: KEEP every documented stack choice** (ADR 0016 / ADR 0006 / ADR 0011
+/ ADR 0012 libraries all pass keep-unless-disqualified — no deprecation,
+advisory, breaking-change, or incompatibility on any *named* choice). Pinned
+version matrix (catalog = `gradle/libs.versions.toml`):
+
+- **Toolchain:** AGP 9.2.1 · Gradle 9.4.1 · Kotlin 2.3.21 · KSP 2.3.9 · JDK 21
+  · compileSdk 37 · targetSdk 36 · minSdk 26 (see #1c)
+- **UI:** Compose BOM 2026.06.00 (fallback 2026.05.01) · Material3 1.4.0 ·
+  activity-compose 1.13.0 · lifecycle 2.10.0 · navigation-compose 2.9.8
+- **Data/DI:** Room 2.8.4 (+ room gradle plugin) · Hilt 2.59.2 ·
+  androidx.hilt:hilt-navigation-compose 1.3.0 · kotlinx-serialization-json
+  1.11.0 · coroutines 1.11.0
+- **MVI:** Orbit MVI 11.0.0 (core/viewmodel/compose/test)
+- **Quality:** ktlint 1.8.0 via jlleitschuh plugin 14.2.0 (must set
+  `ktlint.version` explicitly — plugin bundles 1.5) · Kover 0.9.8 · JUnit
+  4.13.2 · Robolectric 4.16.1
+- **Later phases (researched now, added to catalog at their phase):** Retrofit
+  3.0.0 + OkHttp 5.4.0 (P4) · Tink 1.21.0 + **argon2kt 1.6.0** (P6) · Firebase
+  BoM 34.14.0 — main modules, `-ktx` artifacts removed in BoM 34+ (P6) ·
+  credentials 1.6.0 + googleid 1.2.0 (P6) · Play Billing 9.0.0 (P6; PBL7
+  closes to new apps 2026-08-31, so 9.x is mandatory)
+
+**Notable sub-resolutions (all keep-unless-disqualified):**
+- **Kotlin 2.4.0 disqualified** (released 2026-06-03; no stable KSP supports it
+  — google/ksp#2965 open; Room+Hilt need KSP). Revisit when KSP ships 2.4.
+- **AGP 9 built-in Kotlin:** do NOT apply `org.jetbrains.kotlin.android`/kapt
+  (hard config error). KSP2 only.
+- **Navigation:** keep Navigation Compose 2.9.8 (documented choice, no
+  disqualifier). Research note: Navigation 3 is now Google's recommended path
+  for new Compose apps — adopting it would be an architecture change requiring
+  an ADR; flagged as a candidate v2 checkpoint instead. Founder may override.
+- **Argon2 library (P6):** glossary already notes Tink lacks Argon2id;
+  signal-argon2 is **archived (2024-04-18) → disqualified**; argon2kt 1.6.0 is
+  the maintained, 16KB-page-compliant pick (slow-maintenance; monitor; adjacent
+  to encryption boundary → any future swap is founder territory).
+- **Orbit 11.0.0** built against Kotlin 2.1/Compose 1.8 → smoke-tested in
+  Phase 1 scaffolding (a proof container + orbit-test) before Phase 2 commits
+  to it. Orbit 12 breaking major expected late 2026 — alpha-period checkpoint.
+
+**Confidence:** High on matrix mutual-compatibility (verified pairings);
+medium on BOM 2026.06.00 mirror availability (fallback pinned).
+**Rollback:** versions are catalog-centralized; any pin can be reverted in one
+file. Kotlin-2.4 migration debt is logged as an explicit future checkpoint.
+
+---
+
+## #1b — New-dependency surfacings for Phase 1 (per `build-conventions.md` §4/§6, delegated mode)
+
+**Date:** 2026-06-10 · **Type:** Dependency surfacing (surface-in-writing + proceed)
+
+Foundation-named dependencies need no surfacing. These are *additions or
+settlements* the docs left open, each minimal and justified:
+
+1. **Kover 0.9.8** — settles `testing-strategy.md` §7's open "JaCoCo or Kover"
+   (Kover: first-party JetBrains, Kotlin-native, `koverVerify` backs the
+   qualityGate thresholds). Test/build scope only.
+2. **JUnit 4.13.2 + androidx.test.ext:junit** — testing-strategy implies but
+   never pins; Robolectric's runner is JUnit-4-only, which anchors the choice.
+3. **Robolectric 4.16.1** — named in `testing-strategy.md` §3/§10.
+4. **ktlint-gradle (jlleitschuh) 14.2.0** — the Gradle vehicle for the named
+   ktlint; actively maintained; 14.1+ required for AGP 9 built-in Kotlin.
+5. **orbit-test, room-testing, kotlinx-coroutines-test** — first-party test
+   companions of already-named libraries.
+6. **androidx.core:core-ktx** — baseline Jetpack artifact (edge-to-edge etc.);
+   treated as part of ADR 0016's "Kotlin + Jetpack" umbrella.
+7. **NOT added (deliberately):** MockK, Turbine (not needed by Phase 1 tests —
+   will surface when first needed); Konsist (maintenance-watch per research;
+   layering tests are hand-rolled source-scan instead, zero new deps);
+   property-based lib ("glados or equivalent" in testing-strategy is a Dart
+   residue — Kotlin equivalent decided at Phase 3).
+
+**Rollback:** all are catalog entries; removable individually.
+
+---
+
+## #1c — Local decisions the docs don't specify (surface-in-writing + proceed)
+
+**Date:** 2026-06-10
+
+1. **minSdk 26** (docs name no minSdk; floor from libs is 23). Rationale:
+   `java.time` without desugaring for the data model's ISO-8601-everywhere
+   convention; Android 8.0 (2017) is far below the "2022 budget device" support
+   floor in `testing-strategy.md`. Rollback: lower to 23 + add desugaring.
+2. **Room entities carry DDL CHECK semantics in code, not SQLite CHECKs.**
+   `data-model.md` §3–7 DDL has CHECK constraints; Room `@Entity` cannot
+   declare them. Mapping: closed string sets become Kotlin types/enums at the
+   engine/repo layer + payload sealed hierarchy; `data-model.md` §4 itself
+   notes type×severity combos are "enforced in engine API at write time, not
+   SQLite CHECK". Schema-integrity tests assert rejection at the code
+   enforcement locus. Doc's "mechanical translation" reading adjusted; flagged
+   for the Phase 1 report. Rollback: add a `RoomDatabase.Callback` running raw
+   CREATE with CHECKs (rejected now: duplicates schema, fights Room migration
+   verification).
+3. **Test source-set mapping** (testing-strategy uses a flat `test/`):
+   JVM+Robolectric → `app/src/test/kotlin/ai/cuizine/...` (mirrors main, incl.
+   `fixtures/`); instrumented/Compose-on-device → `app/src/androidTest/`.
+4. **event_log.profile_id nullable** — data-model §7 DDL says NOT NULL but its
+   own comment says "nullable for pre-profile events"; pre-profile events
+   (e.g. `constraint_conversation_started` on day 0) exist, so nullable wins
+   (chain: doc self-contradiction resolved to the reading that makes the
+   specified behavior possible). Doc fix queued for the Phase 1 report.
+5. **Kover thresholds activate per high-risk module at its phase** (validator
+   P3, encryption/billing P6 — near-100% per testing-strategy §7); no global
+   threshold in Phase 1 (scaffolding-only code would make a global number
+   meaningless).
+
+---
+
+## #1d — Phase 1 checkpoint: Orbit MVI ergonomics `[data-driven]` — DEFERRED to named moment
+
+**Date:** 2026-06-10 · **Checkpoint:** `docs/roadmap.md` §3 Phase 1, checkpoint 2
+
+Resolvable only "after the first two or three real containers exist" — that
+moment lands mid-Phase-2. Logged here; will be resolved with an honest
+ergonomics assessment in the Phase 2 report. Phase 1 contributes the smoke
+test (proof container on Orbit 11 + Kotlin 2.3/Compose 1.11).
+
+---
+
 ## #2 — CLAUDE.md audit result (first-iteration mandate)
 
 **Date:** 2026-06-10 · **Type:** Process record

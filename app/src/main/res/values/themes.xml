@@ -1,0 +1,7 @@
+<resources>
+    <!-- Pure-Compose app: the platform theme only hosts the activity until
+         CuizineTheme takes over. No Material Components XML dependency. -->
+    <style name="Theme.Cuizine" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
+</resources>
