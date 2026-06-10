@@ -1,3 +1,5 @@
+import java.util.Properties
+
 // The Cuizine application module — single app module for v1
 // (build-conventions.md §12; multi-module revisited at v2).
 // AGP 9 built-in Kotlin: no org.jetbrains.kotlin.android here (DECISION-LOG #1a).
@@ -12,6 +14,17 @@ plugins {
     alias(libs.plugins.kover)
 }
 
+// Absence-driven credentials (CLAUDE.md §9): keys live ONLY in the gitignored
+// local.properties; an absent key compiles to "" and DI selects the
+// deterministic fake. Never a placeholder secret.
+val localProperties =
+    Properties().apply {
+        val file = rootProject.file("local.properties")
+        if (file.exists()) file.inputStream().use { stream -> load(stream) }
+    }
+
+fun localConfig(key: String): String = localProperties.getProperty(key)?.trim().orEmpty()
+
 android {
     namespace = "ai.cuizine"
     compileSdk = 37
@@ -23,6 +36,9 @@ android {
         versionCode = 1
         versionName = "0.1.0-alpha"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "CUIZINE_USDA_API_KEY", "\"${localConfig("cuizine.usda.api.key")}\"")
+        buildConfigField("String", "CUIZINE_OFF_CONTACT", "\"${localConfig("cuizine.off.contact")}\"")
     }
 
     buildTypes {
@@ -136,6 +152,11 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+
+    // Networking (real Layer 3 food clients; absence-driven activation)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.kotlinx.serialization)
+    implementation(libs.okhttp)
 
     // Coroutines + serialization
     implementation(libs.coroutines.android)

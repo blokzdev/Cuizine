@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Network is used ONLY by: live food-data lookups (key present),
+         LLM calls (Phase 5+), and opt-in sync (Phase 6). Zero-credential
+         builds make no network calls at all (CLAUDE.md §9). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".CuizineApplication"
         android:allowBackup="false"
