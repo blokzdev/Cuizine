@@ -1,0 +1,55 @@
+# ─── Secrets & API keys (trust posture: never commit) ───────────────────────
+# Per technical-architecture.md §6 and ADR 0011, provider keys live outside VCS.
+*.keystore
+*.jks
+keystore.properties
+local.properties
+secrets.properties
+google-services.json
+*.api_key
+.env
+.env.*
+
+# ─── Android / Gradle ───────────────────────────────────────────────────────
+.gradle/
+build/
+captures/
+.cxx/
+*.apk
+*.aar
+*.ap_
+*.aab
+*.dex
+*.class
+output.json
+release/
+
+# Gradle wrapper jar is committed; keep everything else under gradle/ clean
+!gradle-wrapper.jar
+
+# ─── Android Studio / IntelliJ ──────────────────────────────────────────────
+.idea/
+*.iml
+*.ipr
+*.iws
+.navigation/
+.kotlin/
+
+# ─── Kotlin / KSP / annotation processing ───────────────────────────────────
+*.hprof
+.kotlin/
+
+# ─── Testing & coverage ─────────────────────────────────────────────────────
+lint/
+reports/
+test-results/
+*.exec
+
+# ─── OS noise ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Working files (not part of the repo) ───────────────────────────────────
+_staging/
+*.tmp
