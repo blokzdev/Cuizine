@@ -234,7 +234,7 @@ This document does **not** define: terms from external standards (HTTP, SQL, Kot
 
 **Subscription state.** The user's current billing tier and associated metadata, stored in the `subscription_state` table per `monetization-and-billing.md` Section 5. Part of the encrypted sync container. Single row per user, includes the locked price fields that implement the existing-users-keep-original-price commitment. *Primary reference: `monetization-and-billing.md` Section 5.*
 
-**Subsystem.** One of the six architectural layers from `technical-architecture.md` Section 2: data and persistence, constraint engine, agent layer, food data layer, sync and encryption, UI. Each subsystem has its own folder in `lib/` per `build-conventions.md` Section 3. *Primary reference: `technical-architecture.md` Section 2.*
+**Subsystem.** One of the six architectural layers from `technical-architecture.md` Section 2: data and persistence, constraint engine, agent layer, food data layer, sync and encryption, UI. Each subsystem has its own package under `app/src/main/kotlin/ai/cuizine/` per `build-conventions.md` Section 3. *Primary reference: `technical-architecture.md` Section 2.*
 
 **Sync container.** See Encrypted sync container.
 

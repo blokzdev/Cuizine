@@ -186,13 +186,29 @@ Full list in `docs/build-conventions.md` §11. Never:
   v1 scope in v1).
 - Skip the ADR discipline for an architectural decision.
 
-## 8. When the docs don't answer your question
+## 8. When the docs don't answer — or disagree
 
-Per `docs/PRD.md` §9 and `build-conventions.md`: check the vision, check the
-relevant ADR, check the architecture docs — and if the answer is in none of
-them, **surface the gap to the founder before guessing.** Often the question
-itself is the signal that a foundation doc needs to grow (the docs and code
-evolve together — `build-conventions.md` §7's bidirectional update discipline).
+**The conflict-resolution chain** (founder-specified at build kickoff, recorded
+with the standing delegation in `DECISION-LOG.md` entry #0). When two sources
+disagree, the higher one wins:
+
+> **vision > PRD > ADRs > technical-architecture / data-model > conditional
+> docs (subsystem specs) > build-conventions > implementation.**
+> **`glossary.md` wins on terminology.**
+
+Per-doc scoping rules still apply within their domain (e.g. roadmap wins on
+sequencing, build-conventions wins on code style — each doc's §1 states its
+scope). Apply the chain yourself; log non-obvious resolutions in
+`DECISION-LOG.md`. A contradiction the chain genuinely cannot resolve is a
+park-always item (§5).
+
+When the answer is in *none* of the docs: check the vision, check the relevant
+ADR, check the architecture docs — and if still unanswered, **surface the gap**
+(per the active operating mode: in delegated mode, a `DECISION-LOG.md` entry +
+minimal-deviation choice; founder-pending only if trust-critical). Often the
+question itself is the signal that a foundation doc needs to grow (the docs and
+code evolve together — `build-conventions.md` §7's bidirectional update
+discipline).
 
 ## 9. The autonomous loop: ledgers, credentials, recovery
 

@@ -254,7 +254,7 @@ Each dependency below is named, justified, and tagged with its role. The agent i
 - **Kotlin Coroutines + Flow** (`kotlinx-coroutines-core`, `kotlinx-coroutines-android`) — Asynchrony and reactive streams across all layers. *Rationale: ADR 0016.*
 - **kotlinx.serialization** — JSON serialization for the discriminated-union constraint payloads, the food data bundle, agent contracts, and the export format. *Rationale: data-model.md, ADR 0012.*
 - **Google Play Billing Library** (`com.android.billingclient:billing-ktx`) — The paid-tier billing integration (introduced in v2). *Rationale: ADR 0007; details in `monetization-and-billing.md` Section 6.*
-- **JSON serialization** — `json_serializable` and `freezed` (or equivalent) for type-safe model classes. *Rationale: this doc.*
+- **Type-safe model classes** — Kotlin immutable `data class`es with kotlinx.serialization (already listed above); no additional codegen library. *(Corrected 2026-06-10: previously named Dart's `json_serializable`/`freezed`, a residue of the superseded ADR 0005 stack.)*
 
 ### Things explicitly *not* depended on
 

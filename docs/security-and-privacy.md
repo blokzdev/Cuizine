@@ -693,7 +693,7 @@ Per `build-conventions.md` Section 6's agent decision protocol, any change that 
 
 The discipline extends beyond the agent decision protocol:
 
-- **Every change to `lib/data/encryption/`** gets a human review before commit. No exceptions. The encryption module is small enough that every change is scrutable, and the consequences of a bug are severe enough to justify the friction.
+- **Every change to `data/encryption/` (the `ai.cuizine.data.encryption` package)** gets a human review before commit. No exceptions. The encryption module is small enough that every change is scrutable, and the consequences of a bug are severe enough to justify the friction.
 - **Every new external dependency** is reviewed against the threat model. Does this dependency introduce a new attack surface? Does it have a history of security issues? Is it actively maintained? The review is surfaced through the dependency addition flow from `build-conventions.md` Section 4.
 - **Every change to the Firestore security rules** gets a human review and is tested against the scenarios in `testing-strategy.md` Section 8.
 - **Every prompt change that affects the Curator's constraint classification** gets a manual review per `build-conventions.md` Section 8, because mis-classifying a constraint (e.g., marking something as Preference when it should be Medical) can lead to safety floor violations.

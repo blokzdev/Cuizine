@@ -167,7 +167,7 @@ cuizine/
 - **The `ui/` package has no direct database access.** UI code interacts with the engine and agents through the typed contracts in `shared/types/` and through Orbit MVI ViewModels, never by importing Room DAOs directly.
 - **The `agents/` package has no UI dependencies.** Agent code is invoked by the orchestrator, which is invoked by the UI layer's ViewModels, but the agent code itself does not know about Compose or the Android framework.
 
-These layering rules are enforced by lints in `analysis_options.yaml` where possible and by code review where lints can't catch them.
+These layering rules are enforced by automated checks in the Gradle build where possible (lint configuration and/or architecture tests) and by code review where automation can't catch them. *(Corrected 2026-06-10: previously referenced Flutter's `analysis_options.yaml`, a residue of the superseded ADR 0005 stack.)*
 
 ## 4. Kotlin/Compose patterns and the state management choice
 
@@ -266,7 +266,7 @@ The line between local and architectural is not always obvious. When in doubt, s
 
 The agent decides these without surfacing:
 
-- **Variable names within a function.** `final activeSet = ...` vs `final activeConstraints = ...` is a local choice; either is fine as long as it's clear in context.
+- **Variable names within a function.** `val activeSet = ...` vs `val activeConstraints = ...` is a local choice; either is fine as long as it's clear in context.
 - **The exact code structure within a method.** Whether to use a for loop or a `.map().toList()` call is local; the conventions in Section 5 give general guidance and the rest is judgment.
 - **Micro-optimizations that don't change behavior.** Caching a value in a local variable, hoisting a constant out of a loop, using `const` constructors where applicable.
 - **Test fixture details.** What names to give test profiles, what specific constraints to use in test cases (as long as they exercise the right behavior), how to organize test helpers.
@@ -279,7 +279,7 @@ The agent decides these without surfacing:
 
 The agent surfaces these and waits for a decision:
 
-- **New files in unexpected folders.** If the agent finds itself wanting to create a new top-level folder under `lib/` that isn't in Section 3's structure, that's a signal to stop and surface. Maybe it's the right thing to do — but the founder needs to confirm.
+- **New files in unexpected folders.** If the agent finds itself wanting to create a new top-level package under `app/src/main/kotlin/ai/cuizine/` that isn't in Section 3's structure, that's a signal to stop and surface. Maybe it's the right thing to do — but the founder needs to confirm.
 - **New dependencies in the Gradle version catalog.** Per Section 4's dependency usage discipline, every new dependency is surfaced before being added.
 - **Decisions that affect multiple foundation docs.** If implementing a feature in the engine layer requires changing the data model, that's a signal to stop and surface. The foundation docs need to update first.
 - **Anything that looks like a design choice.** If the agent is implementing a feature and finds itself thinking "there are several reasonable ways to do this," that's the signal — the agent surfaces the alternatives and lets the founder pick.
@@ -513,7 +513,7 @@ These fixtures are versioned with the codebase and are the shared starting point
 - **Bypassing the layering discipline from Section 3.** UI code does not import Room DAOs directly. Engine code does not depend on Compose or the Android framework. These boundaries exist for good reasons and are not negotiable.
 - **Making local decisions that should have been architectural.** When in doubt, surface. The cost of asking is smaller than the cost of silent drift.
 - **Editing the foundation docs to match wrong code rather than fixing the code.** If the implementation is wrong, the implementation gets fixed. The docs are not retroactively edited to pretend the wrong thing was intended.
-- **Hard-coding values that should be configuration.** Pricing strings, API endpoints, model names, feature flags — none of these are hardcoded inline. They live in `lib/core/config/` and are loaded at startup.
+- **Hard-coding values that should be configuration.** Pricing strings, API endpoints, model names, feature flags — none of these are hardcoded inline. They live in `core/config/` (the `ai.cuizine.core.config` package per Section 3) and are loaded at startup.
 - **Adding logging that captures user content.** Per ADR 0011 and the forbidden behaviors lists in `local-first-sync.md` and `monetization-and-billing.md`, content telemetry is forbidden. Operational telemetry is fine; content telemetry is not.
 - **Implementing TODO comments without filing them as open questions.** A TODO in the code is a deferred decision. If the deferral is meaningful, it goes in the open questions section of the relevant foundation doc. If it's trivial, it's resolved before the commit. TODO comments that linger forever are signs of accumulating debt.
 - **Skipping the ADR discipline for architectural decisions.** Per Section 9. Architectural decisions get ADRs, period. The discipline of writing them down is what makes the foundation legible six months from now.
