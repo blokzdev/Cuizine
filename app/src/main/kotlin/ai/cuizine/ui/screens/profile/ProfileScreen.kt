@@ -1,6 +1,7 @@
 package ai.cuizine.ui.screens.profile
 
 import ai.cuizine.engine.types.Severity
+import ai.cuizine.shared.types.scopeSummary
 import ai.cuizine.ui.components.ConstraintRow
 import ai.cuizine.ui.components.CuizineButton
 import ai.cuizine.ui.components.CuizineButtonVariant
@@ -8,7 +9,6 @@ import ai.cuizine.ui.components.EmptyState
 import ai.cuizine.ui.components.SeverityIndicator
 import ai.cuizine.ui.state.profile.ProfileSideEffect
 import ai.cuizine.ui.state.profile.ProfileViewModel
-import ai.cuizine.ui.state.profile.scopeSummary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

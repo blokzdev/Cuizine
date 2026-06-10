@@ -58,6 +58,15 @@ android {
         buildConfig = true
     }
 
+    sourceSets {
+        getByName("main") {
+            // The authoritative prompt files live at repo-root prompts/
+            // (build-conventions.md §8) and are bundled into assets so the
+            // agents read the same versioned files the founder edits.
+            assets.directories.add(rootProject.file("prompts").path)
+        }
+    }
+
     testOptions {
         unitTests {
             isIncludeAndroidResources = true // Robolectric
