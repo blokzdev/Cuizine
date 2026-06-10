@@ -1,7 +1,11 @@
 package ai.cuizine.core.di
 
 import ai.cuizine.data.database.daos.ProfileDao
-import ai.cuizine.data.mock.StaticFoodDataPort
+import ai.cuizine.data.food.AiIngredientCategorizer
+import ai.cuizine.data.food.ExternalFoodSources
+import ai.cuizine.data.food.FakeExternalFoodSources
+import ai.cuizine.data.food.FoodDataProvider
+import ai.cuizine.data.food.NullAiIngredientCategorizer
 import ai.cuizine.data.repository.EngineProfileRepository
 import ai.cuizine.data.repository.RoomConstraintStore
 import ai.cuizine.engine.ConstraintGraphApi
@@ -26,9 +30,20 @@ object EngineModule {
     @Singleton
     fun provideEngineClock(): EngineClock = EngineClock { Instant.now().toString() }
 
+    // Phase 4: the real three-layer Food Data Provider (cache → bundle →
+    // external → AI fallback). External sources and the AI categorizer are
+    // absence-driven fakes until keys/config exist (CLAUDE.md §9).
     @Provides
     @Singleton
-    fun provideFoodDataPort(port: StaticFoodDataPort): FoodDataPort = port
+    fun provideFoodDataPort(provider: FoodDataProvider): FoodDataPort = provider
+
+    @Provides
+    @Singleton
+    fun provideExternalFoodSources(fake: FakeExternalFoodSources): ExternalFoodSources = fake
+
+    @Provides
+    @Singleton
+    fun provideAiCategorizer(fake: NullAiIngredientCategorizer): AiIngredientCategorizer = fake
 
     @Provides
     @Singleton

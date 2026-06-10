@@ -43,6 +43,10 @@ object DatabaseModule {
     fun provideConstraintDao(db: CuizineDatabase): ConstraintDao = db.constraintDao()
 
     @Provides
+    fun provideFoodDataCacheDao(db: CuizineDatabase): ai.cuizine.data.database.daos.FoodDataCacheDao =
+        db.foodDataCacheDao()
+
+    @Provides
     @Singleton
     fun provideMigrator(): ConstraintGraphMigrator = ConstraintGraphMigrator()
 

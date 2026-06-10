@@ -43,4 +43,6 @@ abstract class CuizineDatabase : RoomDatabase() {
     abstract fun profileDao(): ProfileDao
 
     abstract fun constraintDao(): ConstraintDao
+
+    abstract fun foodDataCacheDao(): ai.cuizine.data.database.daos.FoodDataCacheDao
 }
