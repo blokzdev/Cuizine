@@ -29,11 +29,27 @@ Verified 2026-06-10 — nothing for you to do right now:
   Phase 1 close. Nothing for you to do.
 - Verify any time with: `gradlew.bat qualityGate` (all green = healthy).
 
-## Phase 4 — USDA FoodData Central API key ⬜
+## Phase 4 — USDA FoodData Central API key 🟡 (researched, ready when you are)
 
-- **What:** free API key for USDA FoodData Central (Open Food Facts needs **no**
-  key). Signup flow + exact `local.properties` entry name to be documented when
-  Phase 4 begins.
+The app is fully functional without this — food lookups run cache → curated
+bundle → recorded fixtures. The real key only matters for live verification
+and for ingredients outside the bundle.
+
+1. **Get the key (free, ~1 minute):** https://fdc.nal.usda.gov/api-key-signup/
+   — first name, last name, email. The key arrives by email instantly. No
+   credit card, no approval wait.
+2. **Where it goes:** add one line to `E:\Local\Cuizine\local.properties`:
+   `cuizine.usda.api.key=YOUR_KEY_HERE`
+   (That file is gitignored; never commit it. Note: api.data.gov
+   auto-deactivates keys it finds in public repos.)
+3. **Limits:** 1,000 requests/hour — far above what the cache-first design
+   ever sends.
+4. **Verify it works:** (command will be finalized with the live-verification
+   section) — a `gradlew` connected check that resolves one non-bundle
+   ingredient (e.g. "quinoa") against the live API.
+
+**Open Food Facts needs no key** — reads are anonymous with a polite
+User-Agent the app sets itself. Nothing for you to do.
 
 ## Phase 5 — LLM provider API keys ⬜
 

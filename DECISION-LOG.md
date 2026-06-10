@@ -341,6 +341,38 @@ that earns its keep when food-data fuzzing arrives.
 
 ---
 
+## #4a — Phase 4 checkpoint: USDA FDC / Open Food Facts API state `[research-informed]` — RESOLVED (KEEP)
+
+**Date:** 2026-06-10 · **Checkpoint:** `docs/roadmap.md` §3 Phase 4, checkpoint 1
+**Evidence:** live-docs research (fdc.nal.usda.gov api-guide/spec, api.data.gov
+manual, OFF docs; full detail in the phase4-food-api-currency workflow output).
+
+**Decision: KEEP both sources per ADR 0012 — no disqualifiers.** Build facts
+pinned for the clients:
+- **USDA FDC:** base `https://api.nal.usda.gov/fdc/v1`; POST `/foods/search`
+  (dataType Foundation + SR Legacy for raw ingredients, Foundation ranked
+  first), GET `/food/{fdcId}?format=full`. Free api.data.gov key —
+  **X-Api-Key header, never the URL** (key out of logs, trust posture);
+  1,000 req/h (429 + ~1h block; read X-RateLimit-Remaining). **Two nutrient
+  DTO shapes** (flattened in search, nested in detail). Nutrient numbers:
+  203 protein / 204 fat / 205 carbs / 291 fiber / 307 sodium / 306 potassium
+  / 305 phosphorus; Foundation + SR Legacy are per-100g. No barcode, no
+  structured allergens (OFF's job). SR Legacy frozen-but-served (fallback
+  for raw-ingredient coverage); noted, not disqualifying.
+- **OFF:** no key for reads; REQUIRED User-Agent convention; barcode +
+  allergens_tags are its unique value (v1 uses name-search secondary to
+  USDA; barcode is v2 Pantry). Detail in the workflow output file.
+- The 1,000/h ceiling validates the cache→bundle→API tiering: the live API
+  is the last resort by design.
+- **AI-fallback accuracy checkpoint [data-driven]:** alpha-deferred as the
+  roadmap specifies.
+
+**New deps for this phase (pre-surfaced in #1a, activated now):** Retrofit
+3.0.0 (first-party kotlinx converter coordinate), OkHttp 5.4.0;
+mockwebserver3 (test scope) when client tests need it.
+
+---
+
 ## #2 — CLAUDE.md audit result (first-iteration mandate)
 
 **Date:** 2026-06-10 · **Type:** Process record
