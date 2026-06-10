@@ -27,8 +27,11 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class MockBindingsModule {
+    // ProfileRepository is REAL since Phase 3 (EngineProfileRepository over
+    // the constraint engine + Room) — the first mock binding replaced, with
+    // screens untouched (the State/Intents seam held).
     @Binds
-    abstract fun bindProfileRepository(impl: MockProfileRepository): ProfileRepository
+    abstract fun bindProfileRepository(impl: ai.cuizine.data.repository.EngineProfileRepository): ProfileRepository
 
     @Binds
     abstract fun bindSuggestionRepository(impl: MockSuggestionRepository): SuggestionRepository

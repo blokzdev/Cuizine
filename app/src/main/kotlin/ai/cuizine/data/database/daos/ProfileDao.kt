@@ -20,4 +20,12 @@ interface ProfileDao {
     /** Active (non-removed) profiles; soft-deleted rows stay readable via [getById]. */
     @Query("SELECT * FROM profiles WHERE removed_at IS NULL")
     suspend fun getActive(): List<ProfileEntity>
+
+    /** Reactive single-profile view (v1 is single-profile per account). */
+    @Query("SELECT * FROM profiles WHERE removed_at IS NULL LIMIT 1")
+    fun observeFirstActive(): kotlinx.coroutines.flow.Flow<ProfileEntity?>
+
+    /** Hard delete — ONLY for the delete-account path (`data-model.md` §2). */
+    @Query("DELETE FROM profiles")
+    suspend fun deleteAll()
 }

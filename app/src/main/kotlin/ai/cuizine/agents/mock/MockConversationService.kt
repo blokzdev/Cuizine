@@ -1,6 +1,6 @@
 package ai.cuizine.agents.mock
 
-import ai.cuizine.data.mock.MockProfileRepository
+import ai.cuizine.data.repository.ProfileRepository
 import ai.cuizine.shared.fixtures.SukhiFixtures
 import ai.cuizine.shared.types.ConversationAuthor
 import ai.cuizine.shared.types.ConversationContext
@@ -28,7 +28,7 @@ import javax.inject.Singleton
 class MockConversationService
     @Inject
     constructor(
-        private val profileRepository: MockProfileRepository,
+        private val profileRepository: ProfileRepository,
     ) : ConversationService {
         private val turns = MutableStateFlow<List<ConversationTurn>>(emptyList())
         private val thinking = MutableStateFlow(ThinkingState())
@@ -49,8 +49,9 @@ class MockConversationService
             turns.value = emptyList()
             when (context) {
                 ConversationContext.Onboarding -> {
+                    // Onboarding only runs at first-run (profile == null) —
+                    // the root branches there; nothing to reset.
                     onboardingStep = 0
-                    profileRepository.resetForOnboarding()
                     cuizineSays(ONBOARDING_QUESTIONS[0])
                 }
 
