@@ -373,6 +373,34 @@ mockwebserver3 (test scope) when client tests need it.
 
 ---
 
+## #4b — Allergen/religious suite findings + Phase 4 resolutions (2026-06-10)
+
+The suite-authoring pass (45 allergen + 17 religious tests) surfaced:
+
+1. **Jain root-vegetable bundle gap (FIXED in-phase):** no bundle entry
+   carried `root_vegetable`; Potato, Onion, Garlic, Ginger now do, and the
+   gap test was flipped to assert the caught behavior. This is the curated
+   bundle doing its ADR 0012 job.
+2. **Kosher meat+dairy mixing (FOUNDER-VISIBLE v1 LIMITATION):** kashrut
+   separation is a cross-ingredient COMBINATION rule; none of the five
+   constraint types (ADR-fixed set) evaluates ingredient combinations — a
+   beef+milk meal passes a `non_kosher` avoid today. Documented by an honest
+   test. A combination-rule constraint type would be a v2 ADR; flagged in
+   the Phase 4 report and worth an open-questions entry in
+   `constraint-engine-spec.md` §11 at the next doc pass.
+3. **Halal risk-tag layering (Curator guidance, Phase 5):** gelatin is
+   `non_halal_risk`, not `non_halal` — a halal household needs the Curator
+   to write BOTH avoids (plus `contains_pork`/`contains_alcohol`). Recorded
+   for the Phase 5 prompt work.
+4. **Fish/egg household-dependence held:** `meat_for_some` /
+   `non_vegetarian_for_some` tags correctly require explicit household
+   choice rather than blanket categorization.
+5. **No species-level halal certification:** correct by design — halal
+   status depends on slaughter, not species; the suite never certifies a
+   meat as halal-safe.
+
+---
+
 ## #2 — CLAUDE.md audit result (first-iteration mandate)
 
 **Date:** 2026-06-10 · **Type:** Process record

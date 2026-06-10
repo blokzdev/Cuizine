@@ -49,7 +49,9 @@ and for ingredients outside the bundle.
    ingredient (e.g. "quinoa") against the live API.
 
 **Open Food Facts needs no key** — reads are anonymous with a polite
-User-Agent the app sets itself. Nothing for you to do.
+User-Agent the app sets itself. Optional but courteous: add a contact email
+for that User-Agent (Open Food Facts asks integrators to be reachable):
+`cuizine.off.contact=you@yourdomain.com` in the same `local.properties`.
 
 ## Phase 5 — LLM provider API keys ⬜
 
