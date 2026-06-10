@@ -5,20 +5,17 @@
 
 ## Current state
 
-- **Current phase:** Phase 1 — Foundation and scaffolding (`docs/roadmap.md` §3)
-- **Current task:** Dependency-currency research (web, in progress) → pin version catalog
-- **Last completed:** Foundation read (all 18 docs + 15 ADRs); ledgers; CLAUDE.md conflict-chain fix; 6 Flutter-residue doc corrections (committed `f46de11`)
-- **Next up (Phase 1 work breakdown, in order):**
-  1. Gradle skeleton: wrapper, `settings.gradle.kts`, root + `app/build.gradle.kts`, `gradle/libs.versions.toml` (versions from checkpoint research), `local.properties` (sdk.dir, local only)
-  2. App shell: `CuizineApplication` (Hilt), `MainActivity` (single-activity, edge-to-edge), manifest
-  3. `core/config` absence-driven config reader (fake-first DI selection lives here)
-  4. Room: 9 entities per `data-model.md` §3–7 (accounts, profiles, constraints, food_data_cache, suggestions, cooked_meals, pantry_items, event_log, schema_metadata) + TypeConverters + DAOs (minimal) + payload `@Serializable` classes in `engine/types`
-  5. `ConstraintGraphMigrator` (empty registry) + the 7 named migrator tests + schema-integrity tests (`testing-strategy.md` §9)
-  6. Theme: `ui/theme/{Color,Type,Shape,Theme}.kt` (M3, dynamic color with protected severity semantics, light+dark)
-  7. `CuizineScaffold`: 4 tabs (Today/Pantry/Profile/Settings) + centered conversation FAB, per-tab back stacks, themed "Welcome to Cuizine" empty state
-  8. Orbit MVI + Hilt wiring with one proof container
-  9. Quality gate: ktlint, Android Lint, Kover thresholds, `qualityGate` aggregate task, layering-discipline test (source-scan, no new dep)
-  10. Phase 1 exit check (`roadmap.md` §11: infra tests pass, app compiles + launches showing themed 4-tab scaffold + FAB, Room schema in place) → phase report → push
+- **Current phase:** Phase 2 — UI shell, component library, and mock data (`docs/roadmap.md` §3)
+- **Current task:** Phase 2 kickoff: surface Phase 2 decision checkpoints; build canonical fixtures (Sukhi/Aisha) + mock containers; then screens per `ui-ux-spec.md` §5
+- **Last completed:** **Phase 1 COMPLETE** (report: `PHASE-REPORTS/phase-1.md`; commits `f46de11`, `b067e7b`). qualityGate green (27 tests, zero lint warnings); app verified launching on Pixel 8 AVD with themed 4-tab scaffold + FAB
+- **Next up (Phase 2 outline):**
+  1. Phase 2 checkpoints: UI1–UI6 nav/conversation bets [data-driven, tune on-device]; Material 3 evolution [research-informed — research done at Phase 1: M3 1.4.0 current, no disqualifier; re-verify only if BOM bumps]
+  2. Canonical fixtures in `test/fixtures/` + mock repositories returning them (Sukhi constraint graph, seeded pantry, saved suggestions; Aisha for temporal scopes)
+  3. Mock containers per `ui-ux-spec.md` §5 contracts (State/Intents identical to future real ones) + 12-component library (§6)
+  4. Screens: onboarding/conversation flow A → Today/suggestion/conflict (B, D) → FAB conversation (C) → Profile/constraint detail → Pantry → Settings surfaces (E, F)
+  5. Compose UI tests per screen + flow navigability (Robolectric where possible)
+  6. Mock-data indicator in debug builds; doc-fix for `event_log.profile_id` nullability
+  7. Phase 2 exit: Flows A–F walkable on fixtures, zero LLM calls → report with device install steps → push
 
 ## Blockers
 
@@ -43,16 +40,18 @@ Tasks provable only against live services are listed here as
 | Tool | Version / state |
 |---|---|
 | JDK (JAVA_HOME) | JDK 21 at `C:\Program Files\Java\jdk-21` (PATH `java` is 22.0.2; Gradle pinned to JAVA_HOME) |
-| Android SDK | `C:\Users\ganes\AppData\Local\Android\Sdk` (platform-tools, build-tools, emulator, system-images present; `ANDROID_HOME` unset — handled via `local.properties` `sdk.dir`) |
-| Gradle | Via wrapper (created in Phase 1 scaffolding) |
+| Android SDK | `C:\Users\ganes\AppData\Local\Android\Sdk`; Platform 37 + Build-Tools 36.0.0 auto-installed during first build |
+| Gradle | Wrapper 9.4.1 · AGP 9.2.1 · Kotlin 2.3.21 · KSP 2.3.9 (full matrix: DECISION-LOG #1a) |
+| Emulator | Pixel 8 AVD verified booting + running the app (headless) |
 | Git | Working; remote = GitHub (`main`) |
+| Quality gate | `gradlew.bat qualityGate` — green as of Phase 1 close |
 
 ## Phase exit-criteria tracker
 
 | Phase | Status |
 |---|---|
-| 1 — Scaffolding | **In progress** |
-| 2 — UI + mock data | Not started |
+| 1 — Scaffolding | **✅ Complete (2026-06-10)** — `PHASE-REPORTS/phase-1.md` |
+| 2 — UI + mock data | **In progress** |
 | 3 — Constraint engine + validator | Not started |
 | 4 — Food data layer | Not started |
 | 5 — Agents + orchestrator | Not started |

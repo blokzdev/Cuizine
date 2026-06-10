@@ -23,10 +23,11 @@
 Verified 2026-06-10 — nothing for you to do right now:
 
 - ✅ JDK 21 installed (`JAVA_HOME=C:\Program Files\Java\jdk-21`)
-- ✅ Android SDK at `C:\Users\ganes\AppData\Local\Android\Sdk`
-- ⬜ **Android emulator AVD** — needed from Phase 2 for on-device walkthroughs
-  and instrumented tests. Verification step and any missing-package
-  instructions will be added once the Gradle build exists.
+- ✅ Android SDK at `C:\Users\ganes\AppData\Local\Android\Sdk` (Platform 37 +
+  Build-Tools 36.0.0 auto-installed during the first build)
+- ✅ Emulator: your **Pixel 8 AVD** boots and runs the app — verified at
+  Phase 1 close. Nothing for you to do.
+- Verify any time with: `gradlew.bat qualityGate` (all green = healthy).
 
 ## Phase 4 — USDA FoodData Central API key ⬜
 
