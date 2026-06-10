@@ -8,9 +8,11 @@ import ai.cuizine.ui.screens.onboarding.OnboardingHost
 import ai.cuizine.ui.screens.pantry.PantryScreen
 import ai.cuizine.ui.screens.profile.ProfileScreen
 import ai.cuizine.ui.screens.settings.SettingsScreen
+import ai.cuizine.ui.screens.today.SuggestionDetailScreen
 import ai.cuizine.ui.screens.today.TodayScreen
 import ai.cuizine.ui.state.RootPhase
 import ai.cuizine.ui.state.RootViewModel
+import ai.cuizine.ui.state.today.TodayViewModel
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
@@ -51,6 +53,8 @@ fun CuizineApp(rootViewModel: RootViewModel = hiltViewModel()) {
     }
 }
 
+private const val ROUTE_SUGGESTION_DETAIL = "today/suggestion"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CuizineShell(isMockIndicatorVisible: Boolean) {
@@ -62,6 +66,9 @@ private fun CuizineShell(isMockIndicatorVisible: Boolean) {
         }
     var conversationContext by remember { mutableStateOf<ConversationContext?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    // One container per feature area (build-conventions §4): Today home and
+    // suggestion detail share this instance.
+    val todayViewModel: TodayViewModel = hiltViewModel()
 
     CuizineScaffold(
         currentDestination = currentDestination,
@@ -81,7 +88,19 @@ private fun CuizineShell(isMockIndicatorVisible: Boolean) {
                 navController = navController,
                 startDestination = CuizineDestination.Today.route,
             ) {
-                composable(CuizineDestination.Today.route) { TodayScreen() }
+                composable(CuizineDestination.Today.route) {
+                    TodayScreen(
+                        onOpenSuggestionDetail = { navController.navigate(ROUTE_SUGGESTION_DETAIL) },
+                        onOpenConversation = { conversationContext = it },
+                        viewModel = todayViewModel,
+                    )
+                }
+                composable(ROUTE_SUGGESTION_DETAIL) {
+                    SuggestionDetailScreen(
+                        viewModel = todayViewModel,
+                        onBack = { navController.popBackStack() },
+                    )
+                }
                 composable(CuizineDestination.Pantry.route) { PantryScreen() }
                 composable(CuizineDestination.Profile.route) { ProfileScreen() }
                 composable(CuizineDestination.Settings.route) { SettingsScreen() }
@@ -105,6 +124,7 @@ private fun CuizineShell(isMockIndicatorVisible: Boolean) {
 
     val activeContext = conversationContext
     if (activeContext != null) {
+        // (Suggestion detail within the Today back stack keeps tab state intact.)
         ModalBottomSheet(
             onDismissRequest = { conversationContext = null },
             sheetState = sheetState,
