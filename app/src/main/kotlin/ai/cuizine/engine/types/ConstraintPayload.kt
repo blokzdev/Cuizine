@@ -85,6 +85,12 @@ data class ContextualState(
     val flag: String,
     val value: String? = null,
     val unit: String? = null,
+    /**
+     * What this state is incompatible with (`constraint-engine-spec.md` §7
+     * Step 3) — e.g. a fasting state is incompatible with `"any_meal"`
+     * during its window. Rarely used; null for most states.
+     */
+    @SerialName("incompatible_with") val incompatibleWith: List<String>? = null,
 )
 
 @Serializable

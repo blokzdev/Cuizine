@@ -266,6 +266,48 @@ cosmetic/packaging call; reverting any is a contained UI change.
 
 ---
 
+## #3a — Phase 3 kickoff: spec gaps surfaced + implementation mappings (2026-06-10)
+
+**Checkpoints surfaced (`roadmap.md` §3 Phase 3):** validator 3-retry bound and
+active-set cache invalidation are both `[data-driven]` at later named moments
+(first real Chef contact in Phase 5; post-hard-cases measurement) — logged,
+deferred to those moments. The engine core below implements the spec as
+written; none of these items deviates from the validator's specified logic.
+
+**Gaps the spec leaves open, resolved minimal-deviation (all outside the
+park-always core, all reversible):**
+1. **Solar daily windows need coordinates; v1 location is coarse**
+   (`constraint-engine-spec.md` §5 computes sunrise/sunset "from the user's
+   location" but no lat/lon exists anywhere in the data model). Resolution: a
+   `SolarTimesPort` with a NOAA-algorithm implementation over representative
+   coordinates per IANA zone (v1 Canadian market zones); unknown zones fall
+   back to a fixed 06:00–18:00 window. Deterministic; injectable for tests.
+   Real-location solar is a contained upgrade if alpha needs it.
+2. **Phase-bounded scopes reference profile-level phases that no doc defines
+   storage for.** Resolution: evaluator accepts an `activePhases` set (empty
+   in v1 — no v1 persona uses phases); storage lands when a feature needs it.
+3. **Limit windows beyond per-meal need cross-meal history** (none exists
+   until Phase 7/v2). Resolution: per_meal enforced exactly; a single meal
+   exceeding a full per_day/per_week ceiling is also flagged (sound lower
+   bound, no false positives). Require windows: single_meal enforced; daily
+   deferred per §3 ("v1 supports single-meal and daily" — daily accounting
+   needs history; surfaced honestly here).
+4. **M/RC unknown ingredient with NO AI categorization available** (spec
+   covers the categorization-succeeded path only): resolved conservatively as
+   a violation (Chef regenerates) rather than a silent pass — the
+   safety-leaning reading.
+5. **Logical-vs-physical enum spelling** (spec §9 hyphens vs `data-model.md`
+   underscores): data-model wins for stored strings per the docs' own
+   precedence rule; Phase 1 storage values stand.
+6. **Quantity normalization for limit sums:** g/kg/mg/ml/l converted;
+   unitless ingredients contribute one 100 g basis unit (documented in code;
+   refined with real food data in Phase 4).
+
+**Rollback:** each is an isolated function or port; none touches the §7
+algorithm's step order or severity rules.
+
+---
+
 ## #2 — CLAUDE.md audit result (first-iteration mandate)
 
 **Date:** 2026-06-10 · **Type:** Process record
