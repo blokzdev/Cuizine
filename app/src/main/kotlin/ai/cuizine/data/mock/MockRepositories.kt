@@ -36,8 +36,9 @@ import javax.inject.Singleton
 class MockProfileRepository
     @Inject
     constructor() : ProfileRepository {
-        // Starts onboarded so the shell is browsable; Flow A resets via [resetForOnboarding].
-        private val profileFlow = MutableStateFlow<ProfileOverview?>(SukhiFixtures.profile)
+        // Starts at first-run (null) so Flow A is the real day-0 experience;
+        // the Welcome screen's skip-to-app loads the full Sukhi fixture.
+        private val profileFlow = MutableStateFlow<ProfileOverview?>(null)
         private val constraintsFlow = MutableStateFlow(SukhiFixtures.constraints)
 
         override fun observeProfile(): Flow<ProfileOverview?> = profileFlow

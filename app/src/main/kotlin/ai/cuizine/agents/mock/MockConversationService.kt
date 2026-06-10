@@ -12,6 +12,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -32,6 +34,11 @@ class MockConversationService
         private val thinking = MutableStateFlow(ThinkingState())
         private var context: ConversationContext = ConversationContext.General
         private var onboardingStep = 0
+
+        // Conversation handling is one-at-a-time: Orbit intents run
+        // concurrently (only reductions serialize), so the service owns its
+        // ordering — as the real orchestrator will.
+        private val sendMutex = Mutex()
 
         override fun observeTurns(): Flow<List<ConversationTurn>> = turns
 
@@ -62,13 +69,15 @@ class MockConversationService
         }
 
         override suspend fun send(text: String) {
-            userSays(text)
-            think("Considering what you've told me…")
-            when (context) {
-                ConversationContext.Onboarding -> advanceOnboarding(text)
-                else -> respondInGeneral(text)
+            sendMutex.withLock {
+                userSays(text)
+                think("Considering what you've told me…")
+                when (context) {
+                    ConversationContext.Onboarding -> advanceOnboarding(text)
+                    else -> respondInGeneral(text)
+                }
+                doneThinking()
             }
-            doneThinking()
         }
 
         override suspend fun confirmOnboarding() {
