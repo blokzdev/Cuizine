@@ -33,8 +33,12 @@ abstract class MockBindingsModule {
     @Binds
     abstract fun bindProfileRepository(impl: ai.cuizine.data.repository.EngineProfileRepository): ProfileRepository
 
+    // Phase 3: the Chef is still scripted, but every served meal passes
+    // through the REAL validator and real conflict planning.
     @Binds
-    abstract fun bindSuggestionRepository(impl: MockSuggestionRepository): SuggestionRepository
+    abstract fun bindSuggestionRepository(
+        impl: ai.cuizine.data.mock.ValidatedMockSuggestionRepository,
+    ): SuggestionRepository
 
     @Binds
     abstract fun bindPantryRepository(impl: MockPantryRepository): PantryRepository

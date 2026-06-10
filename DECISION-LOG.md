@@ -308,6 +308,39 @@ algorithm's step order or severity rules.
 
 ---
 
+## #3b — Hard-cases fleet findings + Phase 3 resolutions (2026-06-10)
+
+The parallel test-authoring pass (4 agents, ~150 tests) reported four
+spec-vs-engine discrepancies. Resolutions:
+
+1. **Preference-tier rejection (CONFIRMED ENGINE BUG, fixed):** §4 Tier 4 says
+   Preference never causes rejection alone; the validator was rejecting on
+   Preference-tier avoid matches. Fixed at Step 5 aggregation (quiet note
+   instead). This is a conformance fix TO the spec, not a deviation.
+2. **Contextual default expiry (CONFIRMED ENGINE BUG, fixed):** today-only
+   flags now expire at end of the user's LOCAL day (§3 Type 5), not now+24h.
+3. **§7 Step 4 disclosure letter (fixed):** the AI-fallback disclosure now
+   attaches only when the categorized check PASSES.
+4. **Daily require windows (FOUNDER-VISIBLE NOTE, not a code change):** §3
+   says v1 "supports single-meal and daily" require windows, but §7's own
+   validator contract is per-suggestion and stateless — daily accounting
+   needs cross-meal history that nothing in v1 produces. Resolved by the
+   spec's internal precedence (§7 is the validator's mechanical contract):
+   daily-window requires are representable, stored, and pass per-meal checks;
+   enforcement begins when meal-history accounting exists (v2/Observer-era).
+   Recommend a one-line doc clarification to §3 — flagged in the Phase 3
+   report for founder sign-off since it touches validator-adjacent wording.
+
+Also logged: window bounds are inclusive at both ends (spec silent;
+documented behavior); weekly scope with empty weekdays is never-active (spec
+silent; conservative). **Property-based testing** ("glados or equivalent" —
+a Dart residue): deferred to Phase 4 with rationale — 224 deterministic
+tests already exceed every §5 category minimum and the enforced coverage
+floor; a Kotlin property lib (jqwik / kotest-property) is a new dependency
+that earns its keep when food-data fuzzing arrives.
+
+---
+
 ## #2 — CLAUDE.md audit result (first-iteration mandate)
 
 **Date:** 2026-06-10 · **Type:** Process record

@@ -38,6 +38,7 @@ class StaticFoodDataPort
                 IngredientFacts("ginger", categories = setOf("aromatic")),
                 IngredientFacts("green chilli", categories = setOf("vegetable", "spice")),
                 IngredientFacts("tomatoes", categories = setOf("vegetable")),
+                IngredientFacts("peas", categories = setOf("vegetable", "legume")),
                 IngredientFacts("ghee", categories = setOf("dairy", "fat")),
                 IngredientFacts("dahi (for raita)", categories = setOf("dairy")),
                 IngredientFacts("kheera", categories = setOf("vegetable", "hydrating")),
