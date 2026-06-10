@@ -40,6 +40,12 @@ interface ProfileRepository {
 
     /** Soft delete (`data-model.md` §2). */
     suspend fun removeConstraint(constraintId: String)
+
+    /**
+     * The delete-account path (`ui-ux-spec.md` §5.5 Flow F): clean local
+     * wipe, back to first-run. The only hard delete in v1 (`data-model.md` §2).
+     */
+    suspend fun clearAllUserData()
 }
 
 interface SuggestionRepository {

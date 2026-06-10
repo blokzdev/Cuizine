@@ -51,4 +51,7 @@ class RootViewModel
         }
 
         fun onOnboardingFinished() = intent { reduce { state.copy(phase = RootPhase.Shell) } }
+
+        /** Delete-account (Flow F): a clean return to first-run. */
+        fun onAccountDeleted() = intent { reduce { state.copy(phase = RootPhase.Onboarding) } }
     }

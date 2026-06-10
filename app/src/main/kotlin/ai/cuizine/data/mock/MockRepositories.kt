@@ -73,6 +73,10 @@ class MockProfileRepository
             constraintsFlow.update { constraints -> constraints.filterNot { it.id == constraintId } }
         }
 
+        override suspend fun clearAllUserData() {
+            resetForOnboarding()
+        }
+
         fun resetForOnboarding() {
             profileFlow.value = null
             constraintsFlow.value = emptyList()

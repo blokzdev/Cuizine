@@ -8,8 +8,4 @@
     <string name="tab_settings">Settings</string>
     <string name="fab_conversation">Talk to Cuizine</string>
 
-    <!-- Phase 2 placeholders (each replaced as its real screen lands) -->
-    <string name="placeholder_pantry">Your pantry will live here.</string>
-    <string name="placeholder_profile">Your constraints and profile will live here.</string>
-    <string name="placeholder_settings">Settings will live here.</string>
 </resources>
