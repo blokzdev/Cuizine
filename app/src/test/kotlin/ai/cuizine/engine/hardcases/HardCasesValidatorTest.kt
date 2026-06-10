@@ -347,8 +347,15 @@ class HardCasesValidatorTest {
         runTest {
             // §7 Step 3 require: an unresolved ingredient never satisfies a require —
             // even a perfect AI categorization is not consulted on this path.
+            // Medical tier so the unsatisfied require rejects (§4: Preference
+            // tier never rejects alone).
             foodData.aiAnswer = IngredientFacts("mystery elixir", categories = setOf("hydrating"))
-            val result = validator.validate(listOf(AishaFixtures.iftarHydration), meal("mystery elixir"))
+            val medicalHydration =
+                AishaFixtures.iftarHydration.copy(
+                    id = "hardcase-require-medical",
+                    severity = ai.cuizine.engine.types.Severity.Medical,
+                )
+            val result = validator.validate(listOf(medicalHydration), meal("mystery elixir"))
             assertFalse(result.passed)
             assertEquals(ConstraintType.Require, result.violations.single().constraintType)
         }

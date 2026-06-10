@@ -638,7 +638,12 @@ class HardCasesActiveSetConflictProvenanceTest {
                     SukhiFixtures.avoidBeef.id,
                     ConstraintChanges(severity = Severity.Medical, reason = "tighter"),
                 )
-            assertEquals(NOW, updated.provenance.modificationHistory.single().at)
+            assertEquals(
+                NOW,
+                updated.provenance.modificationHistory
+                    .single()
+                    .at,
+            )
         }
 
     @Test

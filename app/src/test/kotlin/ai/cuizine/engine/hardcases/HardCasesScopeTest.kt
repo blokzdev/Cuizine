@@ -19,11 +19,6 @@ import ai.cuizine.engine.types.TemporalScope
 import ai.cuizine.shared.fixtures.AishaFixtures
 import ai.cuizine.shared.fixtures.SukhiFixtures
 import ai.cuizine.shared.types.Constraint
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -31,6 +26,11 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 /**
  * Hard-cases scope slice (`testing-strategy.md` §5 Category 3;

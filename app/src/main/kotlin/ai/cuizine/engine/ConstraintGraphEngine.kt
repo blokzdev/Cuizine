@@ -179,7 +179,7 @@ class ConstraintGraphEngine(
         expiresAtIso: String?,
     ): Constraint {
         val now = clock.nowIso()
-        val expiry = expiresAtIso ?: defaultExpiry(flag, now)
+        val expiry = expiresAtIso ?: defaultExpiry(flag, now, profileTimezone(profileId))
         val constraint =
             Constraint(
                 id = "constraint-${UUID.randomUUID()}",
@@ -352,12 +352,23 @@ class ConstraintGraphEngine(
     private fun defaultExpiry(
         flag: String,
         nowIso: String,
+        timezone: String,
     ): String {
         val now = Instant.parse(nowIso)
-        // §3 Type 5 defaults: ~7 days for travel-like states, end-of-day for
-        // today-only states.
-        val days = if ("travel" in flag || "trip" in flag) 7L else 1L
-        return now.plusSeconds(days * 24 * 3600).toString()
+        // §3 Type 5 defaults: ~7 days for travel-like states; END OF the
+        // user's LOCAL day for today-only states.
+        if ("travel" in flag || "trip" in flag) {
+            return now.plusSeconds(7L * 24 * 3600).toString()
+        }
+        val zone = ZoneId.of(timezone)
+        val endOfLocalDay =
+            now
+                .atZone(zone)
+                .toLocalDate()
+                .plusDays(1)
+                .atStartOfDay(zone)
+                .toInstant()
+        return endOfLocalDay.toString()
     }
 
     private fun invalidate(profileId: String) {

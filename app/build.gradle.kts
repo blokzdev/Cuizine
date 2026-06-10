@@ -74,6 +74,38 @@ ktlint {
     android.set(true)
 }
 
+kover {
+    reports {
+        // Risk-tiered coverage (testing-strategy.md §7): coverage is measured
+        // and enforced on the high-risk modules — the validator (safety
+        // floor) and scope evaluation now; encryption and billing classes
+        // join this include list in Phase 6. Trivial accessors elsewhere are
+        // deliberately not coverage-targeted (Principle 5).
+        filters {
+            includes {
+                classes(
+                    "ai.cuizine.engine.validator.*",
+                    "ai.cuizine.engine.scope.*",
+                )
+            }
+        }
+        verify {
+            rule("engine-critical-line-coverage") {
+                bound {
+                    minValue.set(95)
+                    coverageUnits.set(kotlinx.kover.gradle.plugin.dsl.CoverageUnit.LINE)
+                }
+            }
+            rule("engine-critical-branch-coverage") {
+                bound {
+                    minValue.set(85)
+                    coverageUnits.set(kotlinx.kover.gradle.plugin.dsl.CoverageUnit.BRANCH)
+                }
+            }
+        }
+    }
+}
+
 dependencies {
     // Compose
     implementation(platform(libs.compose.bom))

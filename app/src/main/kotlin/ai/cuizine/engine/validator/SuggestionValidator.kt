@@ -53,16 +53,16 @@ class SuggestionValidator(
             when (val payload = constraint.payload) {
                 is AvoidPayload -> {
                     for (ingredient in suggestion.ingredients) {
-                        val facts =
+                        val checkFacts =
                             factsForCheck(
                                 ingredientName = ingredient.name,
                                 resolution = resolutions.getValue(ingredient.name),
                                 severity = constraint.severity,
                                 aiFactsFor = ::aiFactsFor,
                                 violations = violations,
-                                disclosures = disclosures,
                                 constraint = constraint,
                             ) ?: continue
+                        val facts = checkFacts.facts
                         val matches = matchesTarget(payload.target.kind, payload.target.value, ingredient.name, facts)
                         val excepted =
                             payload.exceptions.any { exception ->
@@ -77,6 +77,13 @@ class SuggestionValidator(
                                     reason = "contains avoided ${payload.target.kind} '${payload.target.value}'",
                                     ingredientName = ingredient.name,
                                 )
+                        } else if (checkFacts.isAiDerived && constraint.severity != Severity.Preference) {
+                            // §7 Step 4: the disclosure attaches only when the
+                            // AI-categorized check PASSES (Preference-tier AI
+                            // fallback never discloses).
+                            disclosures +=
+                                "I'm not 100% sure about ${ingredient.name} — if you know it bothers you, " +
+                                "swap it out."
                         }
                     }
                 }
@@ -177,18 +184,32 @@ class SuggestionValidator(
             }
         }
 
-        // Step 5: aggregate.
+        // Step 5: aggregate. Tier 4 mechanics (`constraint-engine-spec.md`
+        // §4): a Preference-tier violation NEVER causes rejection alone — it
+        // is logged as a quiet note instead.
+        val (preferenceTier, rejecting) = violations.partition { it.severity == Severity.Preference }
+        preferenceTier.forEach { violation ->
+            disclosures += "Noted, not blocking: ${violation.reason}."
+        }
         return ValidationResult(
-            passed = violations.isEmpty(),
-            violations = violations,
+            passed = rejecting.isEmpty(),
+            violations = rejecting,
             disclosureNotes = disclosures.distinct(),
         )
     }
+
+    /** Facts ready for a check, with their origin (§7 Step 4 disclosure rules). */
+    private data class CheckFacts(
+        val facts: IngredientFacts,
+        val isAiDerived: Boolean,
+    )
 
     /**
      * §7 Step 4 — severity-scoped unknown-ingredient handling. Returns facts
      * usable for the check, or null when this ingredient cannot be checked
      * (in which case the safety-floor outcome has already been recorded).
+     * Disclosure for AI-derived facts is the CALLER's job, and only when the
+     * check passes (§7 Step 4).
      */
     private suspend fun factsForCheck(
         ingredientName: String,
@@ -196,12 +217,11 @@ class SuggestionValidator(
         severity: Severity,
         aiFactsFor: suspend (String) -> IngredientFacts?,
         violations: MutableList<Violation>,
-        disclosures: MutableList<String>,
         constraint: Constraint,
-    ): IngredientFacts? =
+    ): CheckFacts? =
         when (resolution) {
             is IngredientResolution.Known -> {
-                resolution.facts
+                CheckFacts(resolution.facts, isAiDerived = false)
             }
 
             IngredientResolution.Unknown -> {
@@ -225,10 +245,7 @@ class SuggestionValidator(
                     Severity.Medical, Severity.ReligiousCultural -> {
                         val ai = aiFactsFor(ingredientName)
                         if (ai != null) {
-                            disclosures +=
-                                "I'm not 100% sure about $ingredientName — if you know it bothers you, " +
-                                "swap it out."
-                            ai
+                            CheckFacts(ai, isAiDerived = true)
                         } else {
                             violations +=
                                 Violation(
@@ -246,7 +263,7 @@ class SuggestionValidator(
 
                     Severity.Preference -> {
                         // Lower stakes: AI fallback without a disclosure (§7 Step 4).
-                        aiFactsFor(ingredientName)
+                        aiFactsFor(ingredientName)?.let { CheckFacts(it, isAiDerived = true) }
                     }
                 }
             }
